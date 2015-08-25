@@ -1,6 +1,11 @@
 package linked.swissbib.ch;
 
+import org.openrdf.model.Graph;
+import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
+import org.openrdf.model.impl.StatementImpl;
+import org.openrdf.model.impl.TreeModel;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.*;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
@@ -11,9 +16,11 @@ import virtuoso.sesame2.driver.*;
 
 public class Getrdf {
 
-    public static void getData(String repoUrl, String repoUser, String repoPwd, short objectsNo) {
+    public static Graph getData(String repoUrl, String repoUser, String repoPwd, short objectsNo) {
 
         Repository repo = new VirtuosoRepository(repoUrl, repoUser, repoPwd);
+
+        Graph g = new TreeModel();
 
         try {
             repo.initialize();
@@ -26,18 +33,20 @@ public class Getrdf {
 
             try {
 
-                String queryString = "SELECT ?s ?p ?o WHERE { ?s ?p ?o } ORDER BY ?s LIMIT 10";
+                // Todo: ORDER BY doesn't work (neither on the web console)...
+                String queryString = "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 5";
 
-                TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
-                TupleQueryResult result = tupleQuery.evaluate();
+                // TupleQuery tupleQuery = con.prepareTupleQuery(QueryLanguage.SPARQL, queryString);
+                // TupleQueryResult result = tupleQuery.evaluate();
+                GraphQuery graphQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
+                GraphQueryResult result = graphQuery.evaluate();
 
                 try {
                     while (result.hasNext()) {
-                        BindingSet bindingSet = result.next();
+                        Statement s = result.next();
+                        // BindingSet bindingSet = result.next();
                         // Just for testing
-                        Value valueOfX = bindingSet.getValue("s");
-                        Value valueOfY = bindingSet.getValue("p");
-                        Value valueOfZ = bindingSet.getValue("o");
+                        g.add(s);
                     }
                 }
                 finally {
@@ -54,6 +63,8 @@ public class Getrdf {
         } catch (RepositoryException e) {
             e.printStackTrace();
         }
+
+        return g;
 
     }
 

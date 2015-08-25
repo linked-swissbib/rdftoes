@@ -1,5 +1,11 @@
 package linked.swissbib.ch;
 
+import org.openrdf.model.Graph;
+import org.gesis.esbulktest.BulkJSONLDWriter;
+import org.openrdf.model.Statement;
+import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFWriter;
+
 public class Rdftoes {
 
 
@@ -12,14 +18,26 @@ public class Rdftoes {
     public static void main (String[] args) {
 
         // Add required connection details
+        //String repoHost = "";
         String repoHost = "";
-        // String repoHost = "jdbc:virtuoso://localhost:1111";
         String repoUser = "";
         String repoPwd = "";
 
         short bulkSize = 2000;
 
-        Getrdf.getData(repoHost, repoUser, repoPwd, bulkSize);
+        Graph rdfGraph = Getrdf.getData(repoHost, repoUser, repoPwd, bulkSize);
 
+        RDFWriter writer = new BulkJSONLDWriter(System.out);
+        try {
+            writer.startRDF();
+            for (Statement st : rdfGraph) {
+                writer.handleStatement(st);
+            }
+            writer.endRDF();
+        } catch (RDFHandlerException e) {
+            System.err.println(e);
+        }
+
+        writer.toString();
     }
 }
