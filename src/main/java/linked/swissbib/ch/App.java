@@ -1,28 +1,35 @@
 package linked.swissbib.ch;
 
+
 /**
  * @author Sebastian Schüpbach, project swissbib, Basel
  */
 public class App {
 
-
-    // 1. Get x subjects with all attributed statements
-    // (we should probably define a count in order to know when to stop...)
-    // 2. Serialize them to JSON-LD
-    // 3. Wrap JSON-LD to be compliant with Bulk API
-    // 4. Index the String in ES
-
     public static void main (String[] args) {
 
-        // Add required connection details
-        //String repoHost = "";
-        String repoHost = "";
-        String repoUser = "";
-        String repoPwd = "";
+        // Connection details for Virtuoso server
+        String repoHost = "jdbc:virtuoso://sb-ls1.swissbib.unibas.ch:1111";
+        String repoUser = "swissbib";
+        String repoPwd = "12swissbib34";
 
-        short bulkSize = 2000;
+        // Connection details for Elasticsearch cluster
+        String[] esNodes =
+                {"localhost:9300", "localhost:9301", "localhost:9302"};
+        String esClustername = "linked-swissbib";
+        String index = "testsb3";
+        String[] types = {"bibliographicResource"};
+        short esBulkSize = 1;
 
-        GetRdfStatements.getData(repoHost, repoUser, repoPwd, bulkSize);
+        // Set up pipe
+        ESBulkIndexer esIndex = new ESBulkIndexer(esNodes, esClustername, esBulkSize);
+        BulkJSONLDWriter jsonldWriter = new BulkJSONLDWriter(esIndex, index);
+        GetRdfStatements rdfStatements = new GetRdfStatements(repoHost, repoUser, repoPwd, jsonldWriter);
+
+        // Kick off workflow
+        for (String type: types) rdfStatements.getSubjects(type);
+        esIndex.close();
+        rdfStatements.close();
 
     }
 }
