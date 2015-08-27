@@ -4,10 +4,7 @@ import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
-import org.openrdf.model.Graph;
-import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
-import org.openrdf.model.impl.TreeModel;
 import org.openrdf.rio.*;
 import org.openrdf.rio.jsonld.JSONLDWriter;
 
@@ -19,16 +16,15 @@ import java.util.Map;
 /**
  * Class implements a JSON-LD Bulk writer
  * @author fxbensmann, Gesis, Köln
+ * @author Sebastian Schüpbach, project swissbib. Basel
  */
 public class BulkJSONLDWriter implements RDFWriter {
 
     private JSONLDWriter jsonldWriter=null;
     private StringWriter stringWriter = null;
-    private Resource lastSubject = null;
     private ESBulkIndexer out = null;
-    private Graph graph  = null;
     private String header = null;
-    String index;
+    private String index;
     Map<String, String> m = new HashMap<>();
 
     public BulkJSONLDWriter(ESBulkIndexer out, String index) {
@@ -53,21 +49,16 @@ public class BulkJSONLDWriter implements RDFWriter {
         m.put("schema", "https://schema.org/");
         m.put("skos", "http://www.w3.org/2004/02/skos/core#");
         m.put("void", "http://rdfs.org/ns/void#");
-
-        graph = new TreeModel();
     }
 
 
     public void headerSettings(String type, String id) {
-        this.header = ("{ \"index\": { \"_type\": \"" + type +
-                "\", \"_index\": \"" + this.index +
-                "\", \"_id\": \"" + id + "\" } }");
+        this.header = "{\"index\":{\"_type\":\"" + type + "\",\"_index\":\"" + this.index + "\",\"_id\":\"" + id + "\"}}\n";
     }
 
 
     @Override
     public void startRDF() throws RDFHandlerException {
-        out.index(this.header);
         jsonldWriter.startRDF();
     }
 
@@ -77,15 +68,10 @@ public class BulkJSONLDWriter implements RDFWriter {
         String str = stringWriter.getBuffer().toString();
         try {
             Object compact = JsonLdProcessor.compact(JsonUtils.fromString(str.substring(1, str.length() - 2)), m, new JsonLdOptions());
-            out.index(JsonUtils.toString(compact));
+            out.index(this.header + JsonUtils.toString(compact) + "\n");
         } catch (JsonLdError | IOException jsonLdError) {
             jsonLdError.printStackTrace();
         }
-        /*if(!graph.isEmpty()){
-            out.index(serializeResource(graph));
-        }
-        graph.clear();
-        lastSubject=null;*/
     }
 
     @Override
@@ -96,47 +82,14 @@ public class BulkJSONLDWriter implements RDFWriter {
     @Override
     public void handleStatement(Statement st) throws RDFHandlerException {
         jsonldWriter.handleStatement(st);
-/*        if (lastSubject == null) {
-            lastSubject = st.getSubject();
-        }
-        if (lastSubject.equals(st.getSubject())) {
-            graph.add(st);
-            lastSubject=st.getSubject();
-        }
-        else {
-            out.index(serializeResource(graph));
-            graph.clear();
-            graph.add(st);
-            lastSubject=st.getSubject();
-        }*/
-
     }
+
 
     @Override
     public void handleComment(String comment) throws RDFHandlerException {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
     
-    
-
-//    public String serializeResource(Graph graph) throws RDFHandlerException{
-//        jsonldWriter.startRDF();
-//        for(Statement st : graph){
-//            jsonldWriter.handleStatement(st);
-//        }
-//        jsonldWriter.endRDF();
-//        // Todo: Do we need these two lines?
-//        String str = stringWriter.getBuffer().toString();
-//        // stringWriter.getBuffer().setLength(0);
-//        String jsonldStr = null;
-//        try {
-//            Object compact = JsonLdProcessor.compact(JsonUtils.fromString(str.substring(1, str.length() - 2)), m, new JsonLdOptions());
-//            jsonldStr = JsonUtils.toString(compact);
-//        } catch (JsonLdError | IOException jsonLdError) {
-//            jsonLdError.printStackTrace();
-//        }
-//        return jsonldStr;
-//    }
 
     @Override
     public RDFFormat getRDFFormat() {
