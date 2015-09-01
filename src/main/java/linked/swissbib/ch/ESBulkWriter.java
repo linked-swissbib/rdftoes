@@ -42,7 +42,9 @@ public class ESBulkWriter implements ESBulkWritable {
                 this.subDirCount += 1;
             }
             File dir = new File(this.dirPath + this.subDirCount);
-            if (!dir.exists()) dir.mkdir();
+            boolean success = false;
+            if (!dir.exists()) success = dir.mkdir();
+            if (!success) throw new IOException("Couldn't create new directory!");
             this.writer = new BufferedWriter(new FileWriter(this.dirPath + this.subDirCount + "/" + fileName));
             this.dirSizeCount += 1;
         } catch (IOException e) {
