@@ -1,12 +1,13 @@
 package linked.swissbib.ch;
 
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.openrdf.query.*;
-import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 
+import org.openrdf.repository.sparql.SPARQLRepository;
 import org.openrdf.rio.RDFHandlerException;
-import virtuoso.sesame2.driver.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public class GetRdfStatements {
 
-    Repository repo;
+    SPARQLRepository repo;
     RepositoryConnection con;
     String type;
     String id = null;
@@ -26,7 +27,10 @@ public class GetRdfStatements {
 
     GetRdfStatements(String repoUrl, String repoUser, String repoPwd, BulkJSONLDWriter jsonldWriter) {
         this.jsonldWriter = jsonldWriter;
-        repo = new VirtuosoRepository(repoUrl, repoUser, repoPwd);
+        repo = new SPARQLRepository(repoUrl);
+        repo.setUsernameAndPassword(repoUser, repoPwd);
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        repo.setHttpClient(httpClient);
         try {
             repo.initialize();
             con = repo.getConnection();
