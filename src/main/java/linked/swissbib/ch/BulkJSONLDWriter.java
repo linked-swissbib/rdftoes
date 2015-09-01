@@ -53,7 +53,7 @@ public class BulkJSONLDWriter implements RDFWriter {
 
 
     public void headerSettings(String type, String id) {
-        this.header = "{\"write\":{\"_type\":\"" + type + "\",\"_index\":\"" + this.index + "\",\"_id\":\"" + id + "\"}}\n";
+        this.header = "{\"index\":{\"_type\":\"" + type + "\",\"_index\":\"" + this.index + "\",\"_id\":\"" + id + "\"}}\n";
     }
 
 
