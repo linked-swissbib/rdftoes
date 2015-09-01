@@ -21,8 +21,9 @@ public class App {
         short esBulkSize = 100;
 
         // Set up pipe
-        // ESBulkWritable esIndex = new ESBulkIndexer(esNodes, esClustername, esBulkSize);
-        ESBulkWritable esIndex = new ESBulkWriter((short) 20, (short) 30, "/home/sebastian/temp/testbulk", "blabla");
+        ESBulkWritable esIndex = new ESBulkIndexer(esNodes, esClustername, esBulkSize);
+        // ESBulkWritable esIndex = new ESBulkWriter((short) 20, (short) 30, "/home/sebastian/temp/testbulk", "blabla");
+        esIndex.connect();
         BulkJSONLDWriter jsonldWriter = new BulkJSONLDWriter(esIndex, index);
         GetRdfStatements rdfStatements = new GetRdfStatements(repoHost, repoUser, repoPwd, jsonldWriter);
 

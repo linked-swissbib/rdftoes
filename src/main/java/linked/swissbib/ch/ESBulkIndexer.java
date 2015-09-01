@@ -24,8 +24,6 @@ public class ESBulkIndexer implements ESBulkWritable{
     String esClustername;
     short recordsPerUpload;
 
-    Boolean connEstablished = false;
-
 
     ESBulkIndexer(String[] esNodes, String esClustername, short recordsPerUpload) {
         this.esNodes = esNodes;
@@ -72,10 +70,6 @@ public class ESBulkIndexer implements ESBulkWritable{
 
     @Override
     public void write(String obj) {
-        if (!this.connEstablished) {
-            this.connect();
-            this.connEstablished = true;
-        }
 
         BytesArray ba = new BytesArray(obj);
         try {

@@ -1,11 +1,14 @@
 package linked.swissbib.ch;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
+ * Writes Elasticsearch Bulk API compliant strings to a file structure.
  * @author Sebastian Schüpbach, project swissbib, Basel
  */
 public class ESBulkWriter implements ESBulkWritable {
@@ -32,12 +35,14 @@ public class ESBulkWriter implements ESBulkWritable {
     @Override
     public void connect() {
         SimpleDateFormat curTime = new SimpleDateFormat("yyMMddHHmmssSSS");
-        String fileName = this.filePrefix + "_" + curTime.toString();
+        String fileName = this.filePrefix + "_" + curTime.format(new Date()) + ".jsonld";
         try {
             if (this.dirSizeCount >= this.dirSize) {
                 this.dirSizeCount = 0;
                 this.subDirCount += 1;
             }
+            File dir = new File(this.dirPath + this.subDirCount);
+            if (!dir.exists()) dir.mkdir();
             this.writer = new BufferedWriter(new FileWriter(this.dirPath + this.subDirCount + "/" + fileName));
             this.dirSizeCount += 1;
         } catch (IOException e) {
@@ -54,6 +59,7 @@ public class ESBulkWriter implements ESBulkWritable {
                 this.fileSizeCount = 0;
             }
             this.writer.write(obj);
+            //this.writer.write("awwef");
             this.fileSizeCount += 1;
         } catch (IOException e) {
             e.printStackTrace();
