@@ -22,12 +22,12 @@ public class BulkJSONLDWriter implements RDFWriter {
 
     private JSONLDWriter jsonldWriter=null;
     private StringWriter stringWriter = null;
-    private ESBulkIndexer out = null;
+    private ESBulkWritable out = null;
     private String header = null;
     private String index;
     Map<String, String> m = new HashMap<>();
 
-    public BulkJSONLDWriter(ESBulkIndexer out, String index) {
+    public BulkJSONLDWriter(ESBulkWritable out, String index) {
         this.index = index;
         stringWriter = new StringWriter();
         jsonldWriter = new JSONLDWriter(stringWriter);
@@ -53,7 +53,7 @@ public class BulkJSONLDWriter implements RDFWriter {
 
 
     public void headerSettings(String type, String id) {
-        this.header = "{\"index\":{\"_type\":\"" + type + "\",\"_index\":\"" + this.index + "\",\"_id\":\"" + id + "\"}}\n";
+        this.header = "{\"write\":{\"_type\":\"" + type + "\",\"_index\":\"" + this.index + "\",\"_id\":\"" + id + "\"}}\n";
     }
 
 
@@ -68,7 +68,7 @@ public class BulkJSONLDWriter implements RDFWriter {
         String str = stringWriter.getBuffer().toString();
         try {
             Object compact = JsonLdProcessor.compact(JsonUtils.fromString(str.substring(1, str.length() - 2)), m, new JsonLdOptions());
-            out.index(this.header + JsonUtils.toString(compact) + "\n");
+            out.write(this.header + JsonUtils.toString(compact) + "\n");
         } catch (JsonLdError | IOException jsonLdError) {
             jsonLdError.printStackTrace();
         }

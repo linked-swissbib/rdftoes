@@ -16,7 +16,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
  * @author Sebastian Schüpbach, project swissbib, Basel
  *
  */
-public class ESBulkIndexer {
+public class ESBulkIndexer implements ESBulkWritable{
 
     TransportClient esClient;
     BulkProcessor bulkProcessor;
@@ -27,13 +27,15 @@ public class ESBulkIndexer {
     Boolean connEstablished = false;
 
 
-
     ESBulkIndexer(String[] esNodes, String esClustername, short recordsPerUpload) {
         this.esNodes = esNodes;
         this.esClustername = esClustername;
         this.recordsPerUpload = recordsPerUpload;
     }
-    protected void establishConn() {
+
+
+    @Override
+    public void connect() {
         Settings settings = ImmutableSettings.settingsBuilder()
                 .put("cluster.name", this.esClustername)
                 .build();
@@ -68,9 +70,10 @@ public class ESBulkIndexer {
     }
 
 
-    public void index(String obj) {
+    @Override
+    public void write(String obj) {
         if (!this.connEstablished) {
-            this.establishConn();
+            this.connect();
             this.connEstablished = true;
         }
 
@@ -82,6 +85,8 @@ public class ESBulkIndexer {
         }
     }
 
+
+    @Override
     public void close() {
         this.bulkProcessor.flush();
         this.bulkProcessor.close();
