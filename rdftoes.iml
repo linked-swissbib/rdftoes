@@ -22,7 +22,6 @@
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-http-protocol:2.8.5" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-rio-ntriples:2.8.5" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-queryresultio-api:2.8.5" level="project" />
-    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-queryparser-api:2.8.5" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-queryalgebra-model:2.8.5" level="project" />
     <orderEntry type="library" name="Maven: org.openrdf.sesame:sesame-queryparser-sparql:2.8.5" level="project" />
@@ -36,39 +35,10 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:18.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.4.4" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.4" level="project" />
-    <orderEntry type="module-library">
-      <library name="Maven: com.openlinksw.virtuoso:virt-sesame:1.25">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/virt_sesame2.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Maven: com.openlinksw.virtuoso:virtjdbc:3.84">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/virtjdbc4.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="Maven: org.openrdf.sesame:onejarc:2.6.10">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/openrdf-sesame-2.6.10-onejar.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="Maven: com.github.jsonld-java:jsonld-java:0.5.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.3.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.3.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient-cache:4.2.5" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2.5" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:jcl-over-slf4j:1.7.7" level="project" />
     <orderEntry type="library" name="Maven: com.github.jsonld-java:jsonld-java-sesame:0.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.elasticsearch:elasticsearch:1.4.2" level="project" />
@@ -85,5 +55,8 @@
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-grouping:4.10.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-spatial:4.10.2" level="project" />
     <orderEntry type="library" name="Maven: com.spatial4j:spatial4j:0.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.9" level="project" />
   </component>
 </module>
