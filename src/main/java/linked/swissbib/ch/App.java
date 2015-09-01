@@ -14,15 +14,19 @@ public class App {
         String repoPwd = "";
 
         // Connection details for Elasticsearch cluster
-        String[] esNodes = {""};
-        String esClustername = "";
+        // String[] esNodes = {""};
+        // String esClustername = "";
         String index = "";
-        String[] types = {""};
+        String[] types = {"bibliographicResource", "document", "person", "organization", "work", "item"};
         short esBulkSize = 100;
+        short outDirSize = 300;
+        String rootOutDir = "";
+        String outFilePrefix = "esbulk";
+
 
         // Set up pipe
-        ESBulkWritable esIndex = new ESBulkIndexer(esNodes, esClustername, esBulkSize);
-        // ESBulkWritable esIndex = new ESBulkWriter((short) 20, (short) 30, "/home/sebastian/temp/testbulk", "blabla");
+        // ESBulkWritable esIndex = new ESBulkIndexer(esNodes, esClustername, esBulkSize);
+        ESBulkWritable esIndex = new ESBulkWriter(esBulkSize, outDirSize, rootOutDir, outFilePrefix);
         esIndex.connect();
         BulkJSONLDWriter jsonldWriter = new BulkJSONLDWriter(esIndex, index);
         GetRdfStatements rdfStatements = new GetRdfStatements(repoHost, repoUser, repoPwd, jsonldWriter);

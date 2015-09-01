@@ -57,6 +57,11 @@ public class GetRdfStatements {
     public static String queryBuilder(String type) {
         Map<String, String> m = new HashMap<>();
         m.put("bibliographicResource", "http://purl.org/dc/terms/BibliographicResource");
+        m.put("document", "http://purl.org/ontology/bibo/Document");
+        m.put("person", "http://xmlns.com/foaf/0.1/Person");
+        m.put("organization", "http://xmlns.com/foaf/0.1/Organization");
+        m.put("work", "http://bibframe.org/vocab/Work");
+        m.put("item", "http://bibframe.org/vocab/HeldItem");
         return "SELECT DISTINCT ?s WHERE {?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <" + m.get(type) + "> }";
     }
 
