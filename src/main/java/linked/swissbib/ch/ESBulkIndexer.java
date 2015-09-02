@@ -1,5 +1,6 @@
 package linked.swissbib.ch;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -17,6 +18,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
  *
  */
 public class ESBulkIndexer implements ESBulkWritable{
+
+    private final Logger logger = Logger.getLogger("global");
 
     TransportClient esClient;
     BulkProcessor bulkProcessor;
@@ -48,21 +51,21 @@ public class ESBulkIndexer implements ESBulkWritable{
 
             @Override
             public void beforeBulk(long l, BulkRequest bulkRequest) {
-                System.out.println("Bulk requests to be processed: " + bulkRequest.numberOfActions());
+                logger.info("Bulk requests to be processed: " + bulkRequest.numberOfActions());
             }
 
             @Override
             public void afterBulk(long l, BulkRequest bulkRequest, BulkResponse bulkResponse) {
-                System.out.println("Indexing took " + bulkResponse.getTookInMillis() + " ms");
+                logger.info("Indexing took " + bulkResponse.getTookInMillis() + " ms");
             }
 
             @Override
             public void afterBulk(long l, BulkRequest bulkRequest, Throwable throwable) {
-                System.out.println("Some errors were reported: " + throwable.getMessage());
+                logger.warn(throwable.getMessage());
             }
         })
                 // Header and body line
-                .setBulkActions(this.recordsPerUpload * 2)
+                .setBulkActions(this.recordsPerUpload)
                 .setConcurrentRequests(1)
                 .build();
     }

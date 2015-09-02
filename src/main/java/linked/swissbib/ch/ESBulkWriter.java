@@ -1,5 +1,7 @@
 package linked.swissbib.ch;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -12,6 +14,8 @@ import java.util.Date;
  * @author Sebastian Schüpbach, project swissbib, Basel
  */
 public class ESBulkWriter implements ESBulkWritable {
+
+    private final Logger logger = Logger.getLogger("global");
 
     short fileSizeCount = 0;
     short dirSizeCount = 0;
@@ -45,15 +49,16 @@ public class ESBulkWriter implements ESBulkWritable {
             if (!dir.exists()) {
                 boolean success = dir.mkdir();
                 if (!success) {
-                    System.out.println(this.dirPath + this.subDirCount + ": has not been created");
+                    logger.info("Directory " + this.dirPath + this.subDirCount + " has not been created");
                 } else {
-                    System.out.println(this.dirPath + this.subDirCount + ": has been created");
+                    logger.info("Directory " + this.dirPath + this.subDirCount + " has been created");
                 }
             }
             this.writer = new BufferedWriter(new FileWriter(this.dirPath + this.subDirCount + "/" + fileName));
+            logger.info("Write to file " + this.dirPath + this.subDirCount + "/" + fileName);
             this.dirSizeCount += 1;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
         }
     }
 
@@ -66,10 +71,9 @@ public class ESBulkWriter implements ESBulkWritable {
                 this.fileSizeCount = 0;
             }
             this.writer.write(obj);
-            //this.writer.write("awwef");
             this.fileSizeCount += 1;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
         }
 
     }
