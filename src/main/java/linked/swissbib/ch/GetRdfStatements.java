@@ -2,7 +2,8 @@ package linked.swissbib.ch;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
@@ -23,7 +24,7 @@ import java.util.*;
  */
 public class GetRdfStatements {
 
-    private final Logger logger = Logger.getLogger("global");
+    private final Logger logger = LogManager.getLogger("global");
 
     SPARQLRepository repo;
     RepositoryConnection con;

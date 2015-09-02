@@ -1,6 +1,7 @@
 package linked.swissbib.ch;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -19,7 +20,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
  */
 public class ESBulkIndexer implements ESBulkWritable{
 
-    private final Logger logger = Logger.getLogger("global");
+    private final Logger logger = LogManager.getLogger("global");
 
     TransportClient esClient;
     BulkProcessor bulkProcessor;

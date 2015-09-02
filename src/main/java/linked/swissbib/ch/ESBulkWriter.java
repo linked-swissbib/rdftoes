@@ -1,6 +1,7 @@
 package linked.swissbib.ch;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.Date;
  */
 public class ESBulkWriter implements ESBulkWritable {
 
-    private final Logger logger = Logger.getLogger("global");
+    private final Logger logger = LogManager.getLogger("global");
 
     short fileSizeCount = 0;
     short dirSizeCount = 0;

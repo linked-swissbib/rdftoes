@@ -4,7 +4,8 @@ import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openrdf.model.Statement;
 import org.openrdf.rio.*;
 import org.openrdf.rio.jsonld.JSONLDWriter;
@@ -21,7 +22,7 @@ import java.util.Map;
  */
 public class BulkJSONLDWriter implements RDFWriter {
 
-    private final Logger logger = Logger.getLogger("global");
+    private final Logger logger = LogManager.getLogger("global");
 
     private JSONLDWriter jsonldWriter=null;
     private StringWriter stringWriter = null;

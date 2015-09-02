@@ -1,6 +1,7 @@
 package linked.swissbib.ch;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -13,7 +14,7 @@ import java.util.Scanner;
  */
 public class App {
 
-    private static final Logger logger = Logger.getLogger("global");
+    private static final Logger logger = LogManager.getLogger("global");
 
     public static void main (String[] args) {
 
