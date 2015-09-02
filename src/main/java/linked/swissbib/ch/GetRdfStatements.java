@@ -2,6 +2,12 @@ package linked.swissbib.ch;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.log4j.Logger;
+import org.openrdf.model.Resource;
+import org.openrdf.model.Statement;
+import org.openrdf.model.URI;
+import org.openrdf.model.impl.StatementImpl;
+import org.openrdf.model.impl.URIImpl;
 import org.openrdf.query.*;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
@@ -9,14 +15,15 @@ import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sparql.SPARQLRepository;
 import org.openrdf.rio.RDFHandlerException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Get rdf statements from a remote Virtuoso server.
  * @author Sebastian Schüpbach, project swissbib, Basel
  */
 public class GetRdfStatements {
+
+    private final Logger logger = Logger.getLogger("global");
 
     SPARQLRepository repo;
     RepositoryConnection con;
@@ -34,8 +41,9 @@ public class GetRdfStatements {
         try {
             repo.initialize();
             con = repo.getConnection();
+            logger.info("Connecting to repository " + repoUrl);
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
         }
 
     }
@@ -53,7 +61,7 @@ public class GetRdfStatements {
             }
             r.close();
         } catch (RepositoryException | QueryEvaluationException | MalformedQueryException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
         }
     }
 
@@ -72,17 +80,24 @@ public class GetRdfStatements {
 
     public void getSubjectStatements(String subject) {
         String query = "SELECT ?s ?p ?o WHERE { ?s ?p ?o. FILTER (?s = <" + subject + ">)}";
-        GraphQuery graphQuery;
+        TupleQuery tupleQuery;
+        BindingSet bs;
         try {
-            graphQuery = this.con.prepareGraphQuery(QueryLanguage.SPARQL, query);
-            GraphQueryResult r = graphQuery.evaluate();
+            tupleQuery = this.con.prepareTupleQuery(QueryLanguage.SPARQL, query);
+            TupleQueryResult r = tupleQuery.evaluate();
             this.jsonldWriter.headerSettings(this.type, this.id);
             this.jsonldWriter.startRDF();
-            while (r.hasNext()) this.jsonldWriter.handleStatement(r.next());
+            while (r.hasNext()) {
+                bs = r.next();
+                Resource s = new URIImpl(bs.getValue("s").stringValue());
+                URI p = new URIImpl(bs.getValue("p").stringValue());
+                Statement st = new StatementImpl(s, p, bs.getValue("o"));
+                this.jsonldWriter.handleStatement(st);
+            }
             this.jsonldWriter.endRDF();
             r.close();
         } catch (RepositoryException | MalformedQueryException | QueryEvaluationException | RDFHandlerException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage() + "\nQuery: " + query);
         }
     }
 
@@ -92,7 +107,7 @@ public class GetRdfStatements {
             con.close();
             repo.shutDown();
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
         }
     }
 
