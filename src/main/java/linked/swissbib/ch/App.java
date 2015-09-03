@@ -21,7 +21,7 @@ public class App {
         Properties properties = new Properties();
         BufferedInputStream stream;
         try {
-            if (args[0] == null) {
+            if (args.length == 0) {
                 logger.info("No setting file indicated.");
                 properties = null;
             } else {
@@ -69,7 +69,7 @@ public class App {
         if (properties == null || !(properties.containsKey(val))) {
             Scanner scanner = new Scanner(System.in);
             logger.info("Setting " + val + " is not set and has to be added manually.");
-            System.out.println("Setting " + val + " is not set. Please define a temporary value.\n" + val + " = ");
+            System.out.print("Setting " + val + " is not set. Please define a temporary value.\n" + val + " = ");
             result = scanner.next();
         } else {
             result = properties.getProperty(val);
