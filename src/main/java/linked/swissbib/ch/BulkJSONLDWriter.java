@@ -70,6 +70,7 @@ public class BulkJSONLDWriter implements RDFWriter {
     public void endRDF() throws RDFHandlerException {
         jsonldWriter.endRDF();
         String str = stringWriter.getBuffer().toString();
+        stringWriter.getBuffer().setLength(0);
         try {
             Object compact = JsonLdProcessor.compact(JsonUtils.fromString(str.substring(1, str.length() - 2)), m, new JsonLdOptions());
             out.write(this.header + JsonUtils.toString(compact) + "\n");
