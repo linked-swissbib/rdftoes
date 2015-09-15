@@ -30,12 +30,15 @@ public class BulkJSONLDWriter implements RDFWriter {
     private String header = null;
     private String index;
     Map<String, String> m = new HashMap<>();
+    private JsonLdOptions jsonLdOptions = new JsonLdOptions();
 
     public BulkJSONLDWriter(ESBulkWritable out, String index) {
         this.index = index;
         stringWriter = new StringWriter();
         jsonldWriter = new JSONLDWriter(stringWriter);
+        jsonLdOptions.setEmbed(true);
         this.out = out;
+        m.put("bf", "http://bibframe.org/vocab/");
         m.put("bibo", "http://purl.org/ontology/bibo/");
         m.put("dbp", "http://dbpedia.org/ontology/");
         m.put("dc", "http://purl.org/dc/elements/1.1/");
@@ -72,7 +75,7 @@ public class BulkJSONLDWriter implements RDFWriter {
         String str = stringWriter.getBuffer().toString();
         stringWriter.getBuffer().setLength(0);
         try {
-            Object compact = JsonLdProcessor.compact(JsonUtils.fromString(str.substring(1, str.length() - 2)), m, new JsonLdOptions());
+            Object compact = JsonLdProcessor.compact(JsonUtils.fromString(str.substring(1, str.length() - 2)), m, jsonLdOptions);
             out.write(this.header + JsonUtils.toString(compact) + "\n");
         } catch (JsonLdError | IOException e) {
             logger.error(e.getStackTrace());
