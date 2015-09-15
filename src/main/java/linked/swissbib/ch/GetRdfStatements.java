@@ -57,7 +57,8 @@ public class GetRdfStatements {
             TupleQueryResult r = tupleQuery.evaluate();
             while (r.hasNext()) {
                 String subject = r.next().getValue("s").stringValue();
-                this.id = subject.substring(subject.lastIndexOf("/") + 1);
+                String subjectTrimmed = subject.replace("/about", "");
+                this.id = subjectTrimmed.substring(subjectTrimmed.lastIndexOf("/") + 1);
                 this.getSubjectStatements(subject);
             }
             r.close();
